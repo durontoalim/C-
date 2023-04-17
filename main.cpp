@@ -1,98 +1,81 @@
-#include<bits/stdc++.h>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-#define int long long
-
-typedef vector<int> v;
-typedef pair<int,int> pii;
-typedef pair<double, double> pdd;
-typedef double dl;
-
-#define PB push_back
-#define F first
-#define S second
-#define MP make_pair
-#define endl '\n'
-#define all(a) (a).begin(),(a).end()
-#define sz(x) (int)x.size()
-#define mid(l,r) ((r+l)/2)
-#define left(node) (node*2)
-#define right(node) (node*2+1)
-#define mx_int_prime 999999937
-
-const double PI = acos(-1);
-const double eps = 1e-9;
-const int inf = 2000000000;
-#define MOD 1000000007
-
-#define mem(a,b) memset(a, b, sizeof(a) )
-#define gcd(a,b) __gcd(a,b)
-#define sqr(a) ((a) * (a))
-
-#define FastIO                      \
-    ios::sync_with_stdio(false);    \
-    cin.tie(0);                     \
-    cout.tie(0);                    \
-
-int check(int n)
+void merge(int arr[], int l, int m, int r)
 {
-    int t=1;
-    for(int i=2; i<=sqrt(n); i++)
-    {
-        int flg{};
-        
-        if (n%i==0)
-        {
-            while(n%i==0)n/=i,flg++;
-        }
-        t*=(flg+1);
-    }
-    if (n>1){
-        t*=2;
-    }
-    
-    return t;
+	int i, j, k;
+	int n1 = m - l + 1;
+	int n2 = r - m;
+
+	/* create temp arrays */
+	int L[n1], R[n2];
+
+	/* Copy data to temp arrays L[] and R[] */
+	for (i = 0; i < n1; i++)
+		L[i] = arr[l + i];
+	for (j = 0; j < n2; j++)
+		R[j] = arr[m + 1 + j];
+
+	/* Merge the temp arrays back into arr[l..r]*/
+	i = 0; // Initial index of first subarray
+	j = 0; // Initial index of second subarray
+	k = l; // Initial index of merged subarray
+	while (i < n1 && j < n2) {
+		if (L[i] <= R[j]) {
+			arr[k] = L[i];
+			i++;
+		}
+		else {
+			arr[k] = R[j];
+			j++;
+		}
+		k++;
+	}
+
+	/* Copy the remaining elements of L[], if there
+	are any */
+	while (i < n1) {
+		arr[k] = L[i];
+		i++;
+		k++;
+	}
+
+	/* Copy the remaining elements of R[], if there
+	are any */
+	while (j < n2) {
+		arr[k] = R[j];
+		j++;
+		k++;
+	}
 }
 
-#define optimize() ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-#define fraction() cout.unsetf(ios::floatfield); cout.precision(10); cout.setf(ios::fixed,ios::floatfield);
-#define file() freopen("input.txt","r",stdin);freopen("output.txt","w",stdout);
-
-typedef vector<int>::iterator vit;
-typedef set<int>::iterator sit;
-
-
-int32_t main()
+/* l is for left index and r is right index of the
+sub-array of arr to be sorted */
+void mergeSort(int arr[], int l, int r)
 {
-    FastIO;
-    int N;
-    cin>>N;
-    int t = 1;
-    while (N--)
+	if (l < r) {
+		// Same as (l+r)/2, but avoids overflow for
+		// large l and h
+		int m = l + (r - l) / 2;
+
+		// Sort first and second halves
+		mergeSort(arr, l, m);
+		mergeSort(arr, m + 1, r);
+
+		merge(arr, l, m, r);
+	}
+}
+
+int main()
+{
+	int arr[] = { 12, 11, 13, 5, 6, 7 };
+	int arr_size = sizeof(arr) / sizeof(arr[0]);
+
+	mergeSort(arr, 0, arr_size - 1);
+
+	for (int i = 0; i < arr_size; i++)
     {
-        int n;
-        cin>>n;
-        vector<int>v;
-        vector<double>v2;
-        for(int i=0; i<n; i++){
-            int x;
-            cin>>x;
-
-            v.push_back(x);
-        }
-        double result = -1;
-        for(int i=0; i<n; i++){
-            v2.push_back(check(v[i]));
-        }
-        for(int i = 0; i< n; i++){
-            result = max(result,v2[i]);
-        }
-
-
-        cout<<fixed<<setprecision(4)<<"Case "<<t<<": "<<result<<endl;
-        t++;
+        cout<<arr[i]<<" ";
     }
-
-    return 0;
+	return 0;
 }
